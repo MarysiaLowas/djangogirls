@@ -12,6 +12,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^jobs/', include('jobs.urls', namespace='jobs')),
     url(r'^pages/', include('django.contrib.flatpages.urls')),
-    url(r'^jobs/?', include('jobs.urls', namespace='jobs')),
     url(r'', include('core.urls', namespace='core')),
 )
