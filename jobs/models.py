@@ -1,4 +1,5 @@
 from datetime import timedelta
+
 from django.utils import timezone
 
 from django.db import models
@@ -43,7 +44,7 @@ class Job(models.Model):
     ready_to_publish = models.BooleanField(default=False)
     published_date = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
-    expiration_date = models.DateTimeField(
+    expiration_date = models.DateField(
         blank=True,
         null=True,
         help_text="Automatically is set 60 days from posting. You can override this."
@@ -60,9 +61,13 @@ class Job(models.Model):
             self.save()
 
     def set_expiration_date(self):
-        if self.ready_to_publish and not self.expiration_date:
-            self.expiration_date = self.published_date + timedelta(60)
-            self.save()
+        if self.published_date:
+            if self.ready_to_publish and not self.expiration_date:
+                self.expiration_date = self.published_date + timedelta(60)
+                self.save()
+            if self.ready_to_publish and self.expiration_date:
+                self.expiration_date = self.published_date + timedelta(60)
+                self.save()
 
 
     def __unicode__(self):
