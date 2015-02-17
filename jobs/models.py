@@ -13,10 +13,9 @@ class Company(models.Model):
     name = models.CharField(max_length=500, unique=True)
     website = models.URLField()
 
-
     class Meta:
-        verbose_name = "Company"
-        verbose_name_plural = "Companies"
+        verbose_name = "Company\Organisation"
+        verbose_name_plural = "Companies\Organisations"
         ordering = ['name']
 
     def __unicode__(self):
@@ -25,11 +24,11 @@ class Company(models.Model):
 
 class Job(models.Model):
     title = models.CharField(max_length=500)
-    company = models.ForeignKey('Company', related_name="jobs")
+    company = models.ForeignKey(Company, related_name="jobs")
     contact_email = models.EmailField(max_length=254)
     city = models.CharField(max_length=100)
     country = CountryField()
-    description = models.TextField(max_length=5000)
+    description = models.TextField()
     reviewer = models.ForeignKey(
         User,
         related_name="jobs",
@@ -39,15 +38,15 @@ class Job(models.Model):
     )
     review_status = models.BooleanField(default=False,
                                         help_text="Check if reviewed")
-    reviewers_comment = models.TextField(max_length=5000, blank=True,
-                                         null=True)
+    reviewers_comment = models.TextField(blank=True, null=True)
     ready_to_publish = models.BooleanField(default=False)
     published_date = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     expiration_date = models.DateField(
         blank=True,
         null=True,
-        help_text="Automatically is set 60 days from posting. You can override this."
+        help_text="Automatically is set 60 days from posting. You can"
+                  " override this."
     )
 
     class Meta:
@@ -55,18 +54,11 @@ class Job(models.Model):
         ordering = ['-published_date']
 
     def publish(self):
-        if self.ready_to_publish:
-            self.published_date = timezone.now()
-            self.save()
-
-    def set_expiration_date(self):
-        if self.published_date:
-            if self.ready_to_publish and not self.expiration_date:
-                self.expiration_date = self.published_date + timedelta(60)
-                self.save()
-            if self.ready_to_publish and self.expiration_date:
-                self.expiration_date = self.published_date + timedelta(60)
-                self.save()
+        assert self.ready_to_publish
+        self.published_date = timezone.now()
+        if not self.expiration_date:
+            self.expiration_date = self.published_date + timedelta(60)
+        self.save()
 
     def __unicode__(self):
         return "{0}, {1}".format(self.title, self.company)
@@ -84,8 +76,8 @@ class Meetup(models.Model):
     )
 
     title = models.CharField(max_length=500)
-    organization = models.ForeignKey(
-        'Company',
+    organisation = models.ForeignKey(
+        Company,
         related_name="meetups",
         blank=True,
         null=True,
@@ -94,11 +86,13 @@ class Meetup(models.Model):
     contact_email = models.EmailField(max_length=254)
     city = models.CharField(max_length=100)
     country = CountryField()
-    description = models.TextField(max_length=5000)
+    description = models.TextField()
     is_recurring = models.BooleanField(
         default=False,
         help_text="Is your meetup recurring?"
     )
+    #TODO this field should be required if the is_recurring is True
+    recurrence = models.CharField(max_length=100, blank=True, null=True)
     meetup_date = models.DateTimeField(
         null = True,
         help_text="This stands for a starting date if the meetup is recurring"
@@ -114,11 +108,7 @@ class Meetup(models.Model):
         default=False,
         help_text="Check if reviewed",
     )
-    reviewers_comment = models.TextField(
-        max_length=5000,
-        blank=True,
-        null=True,
-    )
+    reviewers_comment = models.TextField(blank=True, null=True,)
     ready_to_publish = models.BooleanField(default=False)
     published_date = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -139,10 +129,6 @@ class Meetup(models.Model):
         if not self.expiration_date:
             self.expiration_date = self.published_date + timedelta(60)
         self.save()
-
-    # this is temporary for admin.make_published
-    def set_expiration_date(self):
-        pass
 
     def __unicode__(self):
         return u"{0}, {1}".format(self.title, self.city)
