@@ -76,9 +76,8 @@ class Meetup(models.Model):
     )
 
     title = models.CharField(max_length=255)
-    organisation = models.ForeignKey(
-        Company,
-        related_name="meetups",
+    organisation = models.CharField(
+        max_length=255,
         blank=True,
         null=True,
     )
@@ -89,13 +88,18 @@ class Meetup(models.Model):
     description = models.TextField()
     is_recurring = models.BooleanField(
         default=False,
-        help_text="Is your meetup recurring?"
     )
     #TODO this field should be required if the is_recurring is True
-    recurrence = models.CharField(max_length=255, blank=True, null=True)
+    recurrence = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="Provide details of recurrence if applicable."
+    )
     meetup_date = models.DateTimeField(
-        null = True,
-        help_text="This stands for a starting date if the meetup is recurring"
+        null=True,
+        help_text="If this is a recurring meetup/event, please enter a start date.\
+            Date format: DD/MM/YYYY"
     )
     reviewer = models.ForeignKey(
         User,

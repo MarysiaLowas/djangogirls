@@ -1,12 +1,14 @@
 from django.utils import timezone
 
-from django.shortcuts import render, get_object_or_404, render_to_response
+
+from django.shortcuts import render, get_object_or_404, render_to_response, redirect
 from django.template.response import TemplateResponse
 from django.views.generic.edit import CreateView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse_lazy
 
 from .models import Job, Meetup, Company
-from .forms import JobForm
+from .forms import JobForm, MeetupForm
 
 
 def jobs(request):
@@ -95,3 +97,15 @@ class JobCreate(CreateView):
             job.company = company
         job.save()
         return super(JobCreate, self).form_valid(form)
+
+
+class MeetupCreate(SuccessMessageMixin, CreateView):
+    model = Meetup
+    template_name = 'jobs/meetup_edit.html'
+    form_class = MeetupForm
+    success_url = reverse_lazy('jobs:meetups')
+    success_message = 'Your meetup was added to our database, \
+                    you will recieve further information shortly.'
+
+    def form_valid(self, form):
+        return super(MeetupCreate, self).form_valid(form)
