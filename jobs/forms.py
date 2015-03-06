@@ -1,10 +1,11 @@
 from django import forms
 
-from .models import Job, Meetup
+from .models import Job, Company, Meetup
 
 
 class JobForm(forms.ModelForm):
 
+    show_overwrite = False
     company_name = forms.CharField(label='Company',
                                    max_length=500,
                                    required=True)

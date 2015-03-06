@@ -1,6 +1,7 @@
 from django.utils import timezone
 
-from django.shortcuts import render, get_object_or_404, redirect
+
+from django.shortcuts import render, get_object_or_404, render_to_response, redirect
 from django.template.response import TemplateResponse
 from django.views.generic.edit import CreateView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -80,11 +81,20 @@ class JobCreate(CreateView):
 
     def form_valid(self, form):
         job = form.save(commit=False)
-        company, created = Company.objects.get_or_create(
-            name=form.cleaned_data['company_name'],
-            website=form.cleaned_data['website']
-        )
-        job.company = company
+        if 'save' in form.data:
+            company, created = Company.objects.get_or_create(
+                name=form.cleaned_data['company_name'],
+                website=form.cleaned_data['website']
+            )
+            job.company = company
+        elif 'overwrite' in form.data:
+            company = Company.objects.get(name=form.cleaned_data['company_name'])
+            company.website = form.cleaned_data['website']
+            company.save()
+            job.company = company
+        elif 'keep' in form.data:
+            company = Company.objects.get(name=form.cleaned_data['company_name'])
+            job.company = company
         job.save()
         return super(JobCreate, self).form_valid(form)
 
