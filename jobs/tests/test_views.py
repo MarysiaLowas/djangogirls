@@ -3,7 +3,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from jobs.models import Job, Company
+from jobs.models import Job, Company, Meetup
 
 
 class JobCreateTests(TestCase):
@@ -72,3 +72,12 @@ class JobCreateTests(TestCase):
         )
         self.assertEqual(Company.objects.get(name="My Company").website,
                          'http://mycompany.com/')
+
+
+class MainPageTests(TestCase):
+
+    def test_main_page_with_empty_database(self):
+        response = self.client.get(reverse('jobs:main'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("No job offers yet", response.content)
+        self.assertIn("No meetups yet", response.content)
