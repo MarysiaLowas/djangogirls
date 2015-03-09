@@ -1,19 +1,13 @@
 from django import forms
 
-from .models import Job, Company, Meetup
+from .models import Job, Meetup
 
 
 class JobForm(forms.ModelForm):
 
-    show_overwrite = False
-    company_name = forms.CharField(label='Company',
-                                   max_length=500,
-                                   required=True)
-    website = forms.URLField(label='Company website', required=True)
-
     class Meta:
         model = Job
-        fields = ('company_name', 'website', 'contact_email', 'title',
+        fields = ('company', 'website', 'contact_email', 'title',
                   'description', 'city', 'country')
         # custom labels
         labels = {
@@ -25,9 +19,7 @@ class MeetupForm(forms.ModelForm):
 
     class Meta:
         model = Meetup
-        exclude = ['reviewer', 'review_status', 'reviewers_comment',
-            'ready_to_publish', 'published_date', 'created', 'expiration_date'
+        fields = ['title', 'organisation', 'meetup_type', 'contact_email',
+            'website', 'city', 'country', 'description', 'is_recurring', 
+            'recurrence', 'meetup_date'
         ]
-        widgets = {
-            'meetup_date': forms.DateTimeInput(format='%d-%m-%Y'),
-        }
