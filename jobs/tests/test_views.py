@@ -30,3 +30,12 @@ class JobCreateTests(TestCase):
         self.assertTrue(
             Job.objects.get(company="New Company", title="Job offer")
         )
+
+
+class MainPageTests(TestCase):
+
+    def test_main_page_with_empty_database(self):
+        response = self.client.get(reverse('jobs:main'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("No job offers yet", response.content)
+        self.assertIn("No meetups yet", response.content)
