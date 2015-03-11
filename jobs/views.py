@@ -94,7 +94,7 @@ def meetup_details(request, id):
     )
 
 
-class JobCreate(CreateView):
+class JobCreate(SuccessMessageMixin, CreateView):
     model = Job
     template_name = 'jobs/job_edit.html'
     form_class = JobForm
