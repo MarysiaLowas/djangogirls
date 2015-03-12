@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'markdown_deux',
     'django_countries',
     'crispy_forms',
+    'bootstrap3_datetime',
 
     'core',
     'jobs',
