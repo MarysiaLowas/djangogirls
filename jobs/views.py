@@ -1,7 +1,7 @@
 from django.utils import timezone
 
 
-from django.shortcuts import render, get_object_or_404, render_to_response, redirect
+from django.shortcuts import render, get_object_or_404
 from django.template.response import TemplateResponse
 from django.views.generic.edit import CreateView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -93,11 +93,13 @@ def meetup_details(request, id):
         }
     )
 
+
 def confirm_submission(request):
     return TemplateResponse(
         request,
         'jobs/confirm_submission.html'
     )
+
 
 class JobCreate(SuccessMessageMixin, CreateView):
     model = Job

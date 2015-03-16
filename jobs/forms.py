@@ -19,8 +19,8 @@ class JobForm(forms.ModelForm):
 class MeetupForm(forms.ModelForm):
     meetup_date = forms.DateTimeField(
         widget=DateTimeWidget(
-            attrs={'id':"yourdatetimeid"},
-            usel10n = True,
+            attrs={'id': "yourdatetimeid"},
+            usel10n=True,
             bootstrap_version=3
         )
     )
@@ -28,6 +28,6 @@ class MeetupForm(forms.ModelForm):
     class Meta:
         model = Meetup
         fields = ['title', 'organisation', 'meetup_type', 'contact_email',
-            'website', 'city', 'country', 'description', 'is_recurring', 
+            'website', 'city', 'country', 'description', 'is_recurring',
             'recurrence', 'meetup_date'
         ]
