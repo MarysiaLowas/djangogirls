@@ -4,7 +4,6 @@ from django.utils import timezone
 
 from django.db import models
 from django_countries.fields import CountryField
-from django.conf import settings
 
 from core.models import User
 
@@ -110,7 +109,7 @@ class Meetup(PublishFlowModel):
     meetup_date = models.DateTimeField(
         null=True,
         help_text="If this is a recurring meetup/event, please enter a start date.\
-            Date format: YYYY/MM/DD"
+            Date format: YYYY-MM-DD"
     )
 
     class Meta(PublishFlowModel.Meta):

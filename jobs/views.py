@@ -1,7 +1,6 @@
 from django.utils import timezone
 
-
-from django.shortcuts import render, get_object_or_404, render_to_response, redirect
+from django.shortcuts import render, get_object_or_404
 from django.template.response import TemplateResponse
 from django.views.generic.edit import CreateView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -94,11 +93,18 @@ def meetup_details(request, id):
     )
 
 
-class JobCreate(CreateView):
+def confirm_submission(request):
+    return TemplateResponse(
+        request,
+        'jobs/confirm_submission.html'
+    )
+
+
+class JobCreate(SuccessMessageMixin, CreateView):
     model = Job
     template_name = 'jobs/job_edit.html'
     form_class = JobForm
-    success_url = reverse_lazy('jobs:jobs')
+    success_url = reverse_lazy('jobs:confirm_submission')
     success_message = 'Your job offer was added to our database, \
                     you will recieve further information shortly.'
 

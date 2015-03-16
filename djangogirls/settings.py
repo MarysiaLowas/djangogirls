@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'markdown_deux',
     'django_countries',
     'crispy_forms',
+    'datetimewidget',
 
     'core',
     'jobs',
