@@ -13,4 +13,5 @@ urlpatterns = patterns('',
     url(r'^community/', include('jobs.urls', namespace='jobs')),
     url(r'^pages/', include('django.contrib.flatpages.urls')),
     url(r'', include('core.urls', namespace='core')),
+    url(r'^ckeditor/', include('ckeditor.urls')),
 )
