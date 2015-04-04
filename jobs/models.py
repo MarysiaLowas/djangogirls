@@ -13,6 +13,19 @@ class PublishFlowModel(models.Model):
     An abstract class model that handles all logic related to publishing
     an item that needs to be reviewed
     """
+    OPEN = 'OPN'
+    UNDER_REVIEW = 'URE'
+    READY_TO_PUBLISH = 'RTP'
+    PUBLISHED = 'PUB'
+    EXPIRED = 'EXP'
+    STATUSES = (
+        (OPEN, 'Open'),
+        (UNDER_REVIEW, 'Under review'),
+        (READY_TO_PUBLISH, 'Ready to publish'),
+        (PUBLISHED, 'Published'),
+        (EXPIRED, 'Expired'),
+    )
+
     reviewer = models.ForeignKey(
         User,
         related_name="%(app_label)s_%(class)s_related",
@@ -20,10 +33,8 @@ class PublishFlowModel(models.Model):
         null=True,
         on_delete=models.SET_NULL
     )
-    review_status = models.BooleanField(default=False,
-                                        help_text="Check if reviewed")
+    review_status = models.CharField(max_length=3, choices=STATUSES, default=OPEN)
     reviewers_comment = models.TextField(blank=True, null=True)
-    ready_to_publish = models.BooleanField(default=False)
     published_date = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     expiration_date = models.DateField(
@@ -37,11 +48,15 @@ class PublishFlowModel(models.Model):
         abstract = True
         ordering = ['-published_date']
 
+    def is_ready_to_publish(self):
+        return self.review_status == self.READY_TO_PUBLISH
+
     def publish(self):
-        assert self.ready_to_publish
+        assert self.is_ready_to_publish()
         self.published_date = timezone.now()
         if not self.expiration_date:
             self.expiration_date = self.published_date + timedelta(60)
+        self.review_status = self.PUBLISHED
         self.save()
 
 
